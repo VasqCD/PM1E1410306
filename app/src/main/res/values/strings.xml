@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">PM1E1410306</string>
+    <string name="mensaje_exito">Operación realizada con éxito</string>
+    <string name="mensaje_error">Error al realizar la operación</string>
+</resources>
