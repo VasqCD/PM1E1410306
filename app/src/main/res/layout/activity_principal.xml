@@ -16,8 +16,7 @@
         android:layout_marginEnd="24dp"
         android:background="@drawable/edit_text_border"
         android:ems="10"
-        android:hint="Ingrese el nombre"
-        android:inputType="text"
+        android:inputType="text|textPersonName"
         android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
@@ -48,8 +47,7 @@
         android:layout_marginEnd="24dp"
         android:background="@drawable/edit_text_border"
         android:ems="10"
-        android:hint="Numero de telefono"
-        android:inputType="text"
+        android:inputType="phone"
         android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -74,9 +72,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="42dp"
-        android:layout_marginTop="130dp"
+        android:layout_marginTop="128dp"
         android:layout_marginEnd="28dp"
         app:layout_constraintEnd_toStartOf="@+id/vistaFoto"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@android:drawable/ic_menu_camera" />
@@ -89,6 +88,7 @@
         android:layout_marginTop="5dp"
         android:layout_marginEnd="24dp"
         android:background="@drawable/edit_text_border"
+        android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
@@ -107,13 +107,11 @@
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="20dp"
-        android:layout_marginEnd="350dp"
         android:layout_marginBottom="5dp"
         android:text="Nombre"
         app:layout_constraintBottom_toTopOf="@+id/nombres"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/pais" />
 
@@ -121,13 +119,11 @@
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="20dp"
-        android:layout_marginEnd="346dp"
         android:layout_marginBottom="6dp"
         android:text="Telefono"
         app:layout_constraintBottom_toTopOf="@+id/telefono"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/nombres" />
 
@@ -169,5 +165,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnGuardar" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="111dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="2dp"
+        android:text="Seleccionar Foto"
+        app:layout_constraintBottom_toTopOf="@+id/capturarFoto"
+        app:layout_constraintEnd_toStartOf="@+id/vistaFoto"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

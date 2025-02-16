@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:backgroundTint="@color/md_theme_dark_inversePrimary"
     android:orientation="vertical"
     tools:context=".ActivityLists">
 
@@ -11,8 +12,8 @@
         android:id="@+id/listcontact"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_margin="1dp" />
+        android:layout_margin="1dp"
+        android:layout_weight="1" />
 
     <!-- Primera fila de botones -->
     <LinearLayout
@@ -25,17 +26,26 @@
             android:id="@+id/compartir"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_marginEnd="5dp"
-            android:text="Compartir Contacto" />
+            android:layout_weight="1"
+            android:backgroundTint="@color/md_theme_dark_inversePrimary"
+            android:text="Compartir Contacto"
+            android:textColor="@color/md_theme_light_background"
+            android:textSize="12sp"
+            app:icon="@android:drawable/stat_sys_upload_done"
+            app:iconTint="@color/md_theme_dark_inverseSurface" />
 
         <Button
             android:id="@+id/verImagen"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_marginStart="5dp"
-            android:text="Ver Imagen" />
+            android:layout_weight="1"
+            android:backgroundTint="@color/md_theme_dark_onTertiary"
+            android:text="Ver Imagen"
+            android:textColor="@color/md_theme_light_background"
+            android:textSize="12sp"
+            app:icon="@android:drawable/ic_menu_camera" />
     </LinearLayout>
 
     <!-- Segunda fila de botones -->
@@ -49,17 +59,26 @@
             android:id="@+id/eliminar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_marginEnd="5dp"
-            android:text="Eliminar Contacto" />
+            android:layout_weight="1"
+            android:backgroundTint="@color/md_theme_dark_errorContainer"
+            android:text="Eliminar Contacto"
+            android:textColor="@color/md_theme_light_onPrimary"
+            android:textSize="12sp"
+            app:icon="@android:drawable/ic_menu_delete"
+            app:iconTint="@color/md_theme_light_background" />
 
         <Button
             android:id="@+id/actualizar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_marginStart="5dp"
-            android:text="Actualizar Contacto" />
+            android:layout_weight="1"
+            android:backgroundTint="@color/md_theme_dark_surfaceVariant"
+            android:text="Actualizar Contacto"
+            android:textColor="@color/md_theme_light_background"
+            android:textSize="12sp"
+            app:icon="@android:drawable/ic_menu_edit" />
     </LinearLayout>
 
 </LinearLayout>

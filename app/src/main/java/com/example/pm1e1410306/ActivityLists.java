@@ -32,7 +32,6 @@ public class ActivityLists extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lists);
 
-        // Inicializar vistas
         listviewContactos = findViewById(R.id.listcontact);
         btnCompartir = findViewById(R.id.compartir);
         btnEliminar = findViewById(R.id.eliminar);
@@ -49,13 +48,11 @@ public class ActivityLists extends AppCompatActivity {
 
         listviewContactos.setAdapter(adapter);
 
-        // Inicialmente deshabilitar botones
         actualizarEstadoBotones(false);
         configurarBotones();
     }
 
     private void configurarBotones() {
-        // Botón Compartir
         btnCompartir.setOnClickListener(v -> {
             if (contactoSeleccionado != null) {
                 compartirContacto(contactoSeleccionado);
@@ -65,7 +62,6 @@ public class ActivityLists extends AppCompatActivity {
             }
         });
 
-        // Botón Ver Imagen
         btnVerImagen.setOnClickListener(v -> {
             if (contactoSeleccionado != null && contactoSeleccionado.getFoto() != null) {
                 mostrarImagen(contactoSeleccionado.getFoto());
@@ -75,7 +71,7 @@ public class ActivityLists extends AppCompatActivity {
             }
         });
 
-        // Botón Eliminar
+        // boton eliminar
         btnEliminar.setOnClickListener(v -> {
             if (contactoSeleccionado != null) {
                 confirmarEliminarContacto(contactoSeleccionado);
@@ -85,7 +81,7 @@ public class ActivityLists extends AppCompatActivity {
             }
         });
 
-        // Botón Actualizar
+        // actualizar
         btnActualizar.setOnClickListener(v -> {
             if (contactoSeleccionado != null) {
                 abrirActualizacionContacto(contactoSeleccionado);
@@ -121,7 +117,6 @@ public class ActivityLists extends AppCompatActivity {
             ImageView imageView = new ImageView(this);
             imageView.setImageURI(Uri.parse(rutaImagen));
 
-            // Configurar el ImageView
             imageView.setAdjustViewBounds(true);
             imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
 
@@ -153,7 +148,10 @@ public class ActivityLists extends AppCompatActivity {
                 Transacciones.id + "=?", args);
 
         if (deletedRows > 0) {
-            listaContactos.remove(contacto);
+            // Recargar la lista desde la base de datos
+            obtenerListaContactos();
+            adapter.clear();
+            adapter.addAll(listaContactos);
             adapter.notifyDataSetChanged();
             contactoSeleccionado = null;
             actualizarEstadoBotones(false);
