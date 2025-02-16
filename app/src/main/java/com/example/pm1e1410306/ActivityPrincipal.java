@@ -54,6 +54,9 @@ public class ActivityPrincipal extends AppCompatActivity {
     private Button btnGuardar, btnLista;
     private ImageButton btnCapturarFoto;
 
+    private boolean esActualizacion = false;
+    private int contactoId = -1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,11 +64,77 @@ public class ActivityPrincipal extends AppCompatActivity {
         setContentView(R.layout.activity_principal);
         Log.d(TAG, "onCreate iniciado");
 
-        // Verificar permisos antes de inicializar
+        // Inicializar
+        initializeApp();
+
+        // Verificar si es una actualizacion
+        Intent intent = getIntent();
+        if (intent != null) {
+            esActualizacion = intent.getBooleanExtra("esActualizacion", false);
+            Log.d(TAG, "esActualizacion: " + esActualizacion);
+
+            if (esActualizacion) {
+                contactoId = intent.getIntExtra("id", -1);
+                Log.d(TAG, "contactoId: " + contactoId);
+
+                if (contactoId != -1) {
+                    cargarDatosContacto(intent);
+                    btnGuardar.setText("Actualizar");
+                } else {
+                    Log.e(TAG, "ID de contacto inválido");
+                    Toast.makeText(this, "Error al cargar el contacto",
+                            Toast.LENGTH_LONG).show();
+                    finish();
+                }
+            }
+        }
+
+        // Verificar permisos
         if (!checkPermissions()) {
             requestPermissions();
-        } else {
-            initializeApp();
+        }
+    }
+
+    private void cargarDatosContacto(Intent intent) {
+        try {
+            String nombreStr = intent.getStringExtra("nombres");
+            String telefonoStr = intent.getStringExtra("telefono");
+            String notaStr = intent.getStringExtra("nota");
+            String paisStr = intent.getStringExtra("pais");
+            String fotoStr = intent.getStringExtra("foto");
+
+            Log.d(TAG, "Cargando datos: " + nombreStr + ", " + telefonoStr +
+                    ", " + paisStr + ", " + notaStr + ", " + fotoStr);
+
+            if (nombreStr != null) nombres.setText(nombreStr);
+            if (telefonoStr != null) telefono.setText(telefonoStr);
+            if (notaStr != null) nota.setText(notaStr);
+
+            // Seleccionar país
+            if (paisStr != null) {
+                ArrayAdapter<CharSequence> adapter =
+                        (ArrayAdapter<CharSequence>) spinnerPais.getAdapter();
+                for (int i = 0; i < adapter.getCount(); i++) {
+                    if (adapter.getItem(i).toString().equals(paisStr)) {
+                        spinnerPais.setSelection(i);
+                        break;
+                    }
+                }
+            }
+
+            // Cargar foto
+            if (fotoStr != null && !fotoStr.isEmpty()) {
+                currentPhotoPath = fotoStr;
+                File imgFile = new File(fotoStr);
+                if (imgFile.exists()) {
+                    vistaFoto.setImageURI(Uri.fromFile(imgFile));
+                }
+            }
+
+        } catch (Exception e) {
+            Log.e(TAG, "Error al cargar datos: " + e.getMessage());
+            Toast.makeText(this, "Error al cargar los datos del contacto",
+                    Toast.LENGTH_LONG).show();
         }
     }
 
@@ -118,13 +187,12 @@ public class ActivityPrincipal extends AppCompatActivity {
             btnCapturarFoto = findViewById(R.id.capturarFoto);
             vistaFoto = findViewById(R.id.vistaFoto);
 
-            // Configurar spinner de países
+            // slector de paises
             ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                     R.array.paises_array, android.R.layout.simple_spinner_item);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinnerPais.setAdapter(adapter);
 
-            // Configurar listeners
             btnGuardar.setOnClickListener(v -> agregarContacto());
             btnLista.setOnClickListener(v -> {
                 Intent intent = new Intent(ActivityPrincipal.this, ActivityLists.class);
@@ -132,7 +200,6 @@ public class ActivityPrincipal extends AppCompatActivity {
             });
             btnCapturarFoto.setOnClickListener(v -> showPictureDialog());
 
-            // Configurar insets
             ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
                 Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
                 v.setPadding(systemBars.left, systemBars.top,
@@ -163,19 +230,34 @@ public class ActivityPrincipal extends AppCompatActivity {
             valores.put(Transacciones.nota, nota.getText().toString().trim());
             valores.put(Transacciones.foto, currentPhotoPath);
 
-            Long resultado = db.insert(Transacciones.tabla_contactos,
-                    Transacciones.id, valores);
+            if (esActualizacion) {
+                String[] args = {String.valueOf(contactoId)};
+                int resultado = db.update(Transacciones.tabla_contactos,
+                        valores, Transacciones.id + "=?", args);
 
-            if (resultado > 0) {
-                Toast.makeText(this, getString(R.string.mensaje_exito),
-                        Toast.LENGTH_LONG).show();
-                limpiarFormulario();
+                if (resultado > 0) {
+                    Toast.makeText(this, "Contacto actualizado exitosamente",
+                            Toast.LENGTH_LONG).show();
+                    finish();
+                } else {
+                    Toast.makeText(this, "Error al actualizar el contacto",
+                            Toast.LENGTH_LONG).show();
+                }
+            } else {
+                // Insertar nuevo contacto
+                Long resultado = db.insert(Transacciones.tabla_contactos,
+                        Transacciones.id, valores);
+                if (resultado > 0) {
+                    Toast.makeText(this, "Contacto guardado exitosamente",
+                            Toast.LENGTH_LONG).show();
+                    limpiarFormulario();
+                }
             }
 
             db.close();
         } catch (Exception e) {
-            Log.e(TAG, "Error al agregar contacto: " + e.getMessage());
-            Toast.makeText(this, getString(R.string.mensaje_error),
+            Log.e(TAG, "Error: " + e.getMessage());
+            Toast.makeText(this, "Error al procesar el contacto",
                     Toast.LENGTH_LONG).show();
         }
     }
