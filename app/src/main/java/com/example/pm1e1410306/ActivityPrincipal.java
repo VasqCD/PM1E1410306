@@ -8,7 +8,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.InputFilter;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -38,6 +43,7 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import com.example.pm1e1410306.Utils.ValidacionesRegex;
 
 public class ActivityPrincipal extends AppCompatActivity {
 
@@ -193,6 +199,46 @@ public class ActivityPrincipal extends AppCompatActivity {
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinnerPais.setAdapter(adapter);
 
+            // Aplicar filtros al campo de nombres
+            nombres.setFilters(new InputFilter[]{
+                    ValidacionesRegex.nombreFilter,
+                    new InputFilter.LengthFilter(50) // limitar a 50 caracteres
+            });
+
+            // Aplicar filtros al campo de teléfono
+            telefono.setFilters(new InputFilter[]{
+                    ValidacionesRegex.telefonoFilter,
+                    new InputFilter.LengthFilter(15) // máximo según estándar internacional
+            });
+
+            // Agregar validación en tiempo real para el teléfono
+            spinnerPais.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    // Validar el teléfono actual cuando cambia el país
+                    String telefonoActual = telefono.getText().toString();
+                    if (!telefonoActual.isEmpty()) {
+                        validarTelefono(telefonoActual);
+                    }
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {}
+            });
+
+            telefono.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    validarTelefono(s.toString());
+                }
+            });
+
             btnGuardar.setOnClickListener(v -> agregarContacto());
             btnLista.setOnClickListener(v -> {
                 Intent intent = new Intent(ActivityPrincipal.this, ActivityLists.class);
@@ -212,6 +258,17 @@ public class ActivityPrincipal extends AppCompatActivity {
                     Toast.LENGTH_LONG).show();
         }
     }
+
+    private void validarTelefono(String numero) {
+        String paisSeleccionado = spinnerPais.getSelectedItem().toString();
+        if (!ValidacionesRegex.validarTelefonoPorPais(numero, paisSeleccionado)) {
+            telefono.setError(ValidacionesRegex.getMensajeErrorTelefono(paisSeleccionado));
+        } else {
+            telefono.setError(null);
+        }
+    }
+
+
 
     private void agregarContacto() {
         if (!validarCampos()) {
@@ -267,10 +324,19 @@ public class ActivityPrincipal extends AppCompatActivity {
             nombres.setError("El nombre es requerido");
             return false;
         }
-        if (telefono.getText().toString().trim().isEmpty()) {
+
+        String telefonoText = telefono.getText().toString().trim();
+        if (telefonoText.isEmpty()) {
             telefono.setError("El teléfono es requerido");
             return false;
         }
+
+        String paisSeleccionado = spinnerPais.getSelectedItem().toString();
+        if (!ValidacionesRegex.validarTelefonoPorPais(telefonoText, paisSeleccionado)) {
+            telefono.setError(ValidacionesRegex.getMensajeErrorTelefono(paisSeleccionado));
+            return false;
+        }
+
         if (nota.getText().toString().trim().isEmpty()) {
             nota.setError("La nota es requerida");
             return false;
