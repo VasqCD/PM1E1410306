@@ -61,8 +61,9 @@ public class ContactoAdapter extends ArrayAdapter<Contacto> {
                 .setMessage("¿Desea llamar a " + contacto.getNombres() + "?")
                 .setPositiveButton("Sí", (dialog, which) -> {
                     seleccionarItem(itemView, contacto);
-                    Intent intent = new Intent(Intent.ACTION_DIAL);
-                    intent.setData(Uri.parse("tel:" + contacto.getTelefono()));
+                    Intent intent = new Intent(context, ActivityCall.class);
+                    intent.putExtra("telefono", contacto.getTelefono());
+                    intent.putExtra("nombre", contacto.getNombres());
                     context.startActivity(intent);
                 })
                 .setNegativeButton("No", (dialog, which) -> {
