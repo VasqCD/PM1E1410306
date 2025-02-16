@@ -16,11 +16,10 @@ import com.example.pm1e1410306.Models.Contacto;
 import java.util.ArrayList;
 
 public class ActivityLists extends AppCompatActivity {
-
     ListView listviewContactos;
     ArrayList<Contacto> listaContactos;
-    ArrayList<String> arregloContactos;
     SQLiteConexion conexion;
+    ContactoAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,31 +31,18 @@ public class ActivityLists extends AppCompatActivity {
 
         obtenerListaContactos();
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_1, arregloContactos);
+        adapter = new ContactoAdapter(this, listaContactos);
         listviewContactos.setAdapter(adapter);
-
-        // Configurar el evento onClick para mostrar más detalles del contacto
-        listviewContactos.setOnItemClickListener((parent, view, position, id) -> {
-            Contacto contacto = listaContactos.get(position);
-            Toast.makeText(this,
-                    "Seleccionado: " + contacto.getNombres(),
-                    Toast.LENGTH_SHORT).show();
-            // Aquí puedes agregar la lógica para mostrar más detalles del contacto
-            // por ejemplo, abrir una nueva actividad con los detalles completos
-        });
     }
 
     private void obtenerListaContactos() {
         SQLiteDatabase db = conexion.getReadableDatabase();
-        Contacto contacto;
         listaContactos = new ArrayList<>();
 
-        // Cursor para recorrer los resultados
         Cursor cursor = db.rawQuery(Transacciones.SelectTableContacts, null);
 
         while(cursor.moveToNext()) {
-            contacto = new Contacto();
+            Contacto contacto = new Contacto();
             contacto.setId(cursor.getInt(0));
             contacto.setNombres(cursor.getString(1));
             contacto.setTelefono(cursor.getString(2));
@@ -68,13 +54,5 @@ public class ActivityLists extends AppCompatActivity {
         }
 
         cursor.close();
-
-        // Llenar el ArrayList que se mostrará en el ListView
-        arregloContactos = new ArrayList<>();
-        for(Contacto c : listaContactos) {
-            arregloContactos.add(c.getNombres() + " | " +
-                    c.getTelefono() + " | " +
-                    c.getPais());
-        }
     }
 }

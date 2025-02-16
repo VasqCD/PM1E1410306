@@ -10,6 +10,18 @@
     <ListView
         android:id="@+id/listcontact"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="622dp"
         android:layout_margin="1dp" />
+
+    <Button
+        android:id="@+id/compartir"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Compartir Contacto" />
+
+    <Button
+        android:id="@+id/eliminar"
+        android:layout_width="177dp"
+        android:layout_height="wrap_content"
+        android:text="Eliminar contacto" />
 </LinearLayout>
