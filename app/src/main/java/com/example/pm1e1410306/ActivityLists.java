@@ -205,8 +205,16 @@ public class ActivityLists extends AppCompatActivity {
             adapter.clear();
             adapter.addAll(listaContactos);
             adapter.notifyDataSetChanged();
+
+            if (contactoSeleccionado != null) {
+                for (Contacto contacto : listaContactos) {
+                    if (contacto.getId() == contactoSeleccionado.getId()) {
+                        contactoSeleccionado = contacto;
+                        actualizarEstadoBotones(true);
+                        break;
+                    }
+                }
+            }
         }
-        actualizarEstadoBotones(false);
-        contactoSeleccionado = null;
     }
 }
