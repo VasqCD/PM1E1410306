@@ -10,18 +10,56 @@
     <ListView
         android:id="@+id/listcontact"
         android:layout_width="match_parent"
-        android:layout_height="622dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:layout_margin="1dp" />
 
-    <Button
-        android:id="@+id/compartir"
-        android:layout_width="wrap_content"
+    <!-- Primera fila de botones -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Compartir Contacto" />
+        android:orientation="horizontal"
+        android:padding="5dp">
 
-    <Button
-        android:id="@+id/eliminar"
-        android:layout_width="177dp"
+        <Button
+            android:id="@+id/compartir"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="5dp"
+            android:text="Compartir Contacto" />
+
+        <Button
+            android:id="@+id/verImagen"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="5dp"
+            android:text="Ver Imagen" />
+    </LinearLayout>
+
+    <!-- Segunda fila de botones -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Eliminar contacto" />
+        android:orientation="horizontal"
+        android:padding="5dp">
+
+        <Button
+            android:id="@+id/eliminar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="5dp"
+            android:text="Eliminar Contacto" />
+
+        <Button
+            android:id="@+id/actualizar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="5dp"
+            android:text="Actualizar Contacto" />
+    </LinearLayout>
+
 </LinearLayout>
