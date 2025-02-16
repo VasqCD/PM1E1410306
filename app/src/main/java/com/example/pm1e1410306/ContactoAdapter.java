@@ -16,46 +16,77 @@ import java.util.List;
 public class ContactoAdapter extends ArrayAdapter<Contacto> {
     private Context context;
     private List<Contacto> contactos;
+    private ContactoSeleccionadoListener listener;
+    private View selectedView;
 
-    public ContactoAdapter(Context context, List<Contacto> contactos) {
+    public interface ContactoSeleccionadoListener {
+        void onContactoSeleccionado(Contacto contacto);
+    }
+
+    public ContactoAdapter(Context context, List<Contacto> contactos,
+                           ContactoSeleccionadoListener listener) {
         super(context, 0, contactos);
         this.context = context;
         this.contactos = contactos;
+        this.listener = listener;
     }
 
     @NonNull
     @Override
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
-        View listItemView = convertView;
-        if (listItemView == null) {
+        // Crear una variable final para el listItemView
+        final View listItemView;
+
+        if (convertView == null) {
             listItemView = LayoutInflater.from(context).inflate(
                     R.layout.contact_list_item, parent, false);
+        } else {
+            listItemView = convertView;
         }
 
         Contacto contactoActual = contactos.get(position);
-
         TextView txtNombreTelefono = listItemView.findViewById(R.id.txtNombreTelefono);
-
-        // Configurar el texto principal
         String displayText = contactoActual.getNombres() + " | " + contactoActual.getTelefono();
         txtNombreTelefono.setText(displayText);
 
-        // Configurar el click en el item
-        listItemView.setOnClickListener(v -> mostrarDialogoLlamada(contactoActual));
+        // Ahora listItemView es efectivamente final y puede usarse en la lambda
+        listItemView.setOnClickListener(v -> mostrarDialogoLlamada(contactoActual, listItemView));
 
         return listItemView;
     }
 
-    private void mostrarDialogoLlamada(Contacto contacto) {
+    private void mostrarDialogoLlamada(Contacto contacto, View itemView) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Acción")
                 .setMessage("¿Desea llamar a " + contacto.getNombres() + "?")
                 .setPositiveButton("Sí", (dialog, which) -> {
+                    seleccionarItem(itemView, contacto);
                     Intent intent = new Intent(Intent.ACTION_DIAL);
                     intent.setData(Uri.parse("tel:" + contacto.getTelefono()));
                     context.startActivity(intent);
                 })
-                .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
+                .setNegativeButton("No", (dialog, which) -> {
+                    seleccionarItem(itemView, contacto);
+                    dialog.dismiss();
+                })
                 .show();
+    }
+
+    private void seleccionarItem(View itemView, Contacto contacto) {
+        // Desseleccionar vista anterior si existe
+        if (selectedView != null) {
+            selectedView.setBackgroundColor(
+                    context.getResources().getColor(android.R.color.white));
+        }
+
+        // Seleccionar nueva vista
+        selectedView = itemView;
+        selectedView.setBackgroundColor(
+                context.getResources().getColor(android.R.color.holo_blue_light));
+
+        // Notificar al listener
+        if (listener != null) {
+            listener.onContactoSeleccionado(contacto);
+        }
     }
 }
